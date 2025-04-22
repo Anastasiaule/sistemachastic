@@ -74,7 +74,7 @@ namespace система_частиц
             // ну и отрисовку перепишем
             public override void Draw(Graphics g)
             {
-                float k = Math.Min(1f, Life / 100);
+                float k = Math.Max(0, Math.Min(1f, Life / 100));
 
                 // так как k уменьшается от 1 до 0, то порядок цветов обратный
                 var color = MixColor(ToColor, FromColor, k);
@@ -95,7 +95,7 @@ namespace система_частиц
             public abstract void ImpactParticle(Particle particle);
 
             // базовый класс для отрисовки точечки
-            public void Render(Graphics g)
+            public virtual void Render(Graphics g)
             {
                 g.FillEllipse(
                         new SolidBrush(Color.Red),
@@ -104,6 +104,7 @@ namespace система_частиц
                         10,
                         10
                     );
+              
             }
         }
         public class GravityPoint : IImpactPoint
@@ -120,6 +121,30 @@ namespace система_частиц
                 particle.SpeedX += gX * Power / r2;
                 particle.SpeedY += gY * Power / r2;
             }
+            public override void Render(Graphics g)
+            {
+                // буду рисовать окружность с диаметром равным Power
+                g.DrawEllipse(
+                       new Pen(Color.Red),
+                       X - Power / 2,
+                       Y - Power / 2,
+                       Power,
+                       Power
+                   );
+                var stringFormat = new StringFormat(); // создаем экземпляр класса
+                stringFormat.Alignment = StringAlignment.Center; // выравнивание по горизонтали
+                stringFormat.LineAlignment = StringAlignment.Center; // выравнивание по вертикали
+
+                g.DrawString(
+                    $"Я гравитон\nc силой {Power}",
+                    new Font("Verdana", 10),
+                    new SolidBrush(Color.White),
+                    X,
+                    Y,
+                    stringFormat // передаем инфу о выравнивании
+                );
+
+            }
         }
         public class AntiGravityPoint : IImpactPoint
         {
@@ -130,10 +155,15 @@ namespace система_частиц
             {
                 float gX = X - particle.X;
                 float gY = Y - particle.Y;
-                float r2 = (float)Math.Max(100, gX * gX + gY * gY);
 
-                particle.SpeedX -= gX * Power / r2; // тут минусики вместо плюсов
-                particle.SpeedY -= gY * Power / r2; // и тут
+                double r = Math.Sqrt(gX * gX + gY * gY); // считаем расстояние от центра точки до центра частицы
+                if (r + particle.Radius < Power / 2) // если частица оказалось внутри окружности
+                {
+                    // то притягиваем ее
+                    float r2 = (float)Math.Max(100, gX * gX + gY * gY);
+                    particle.SpeedX += gX * Power / r2;
+                    particle.SpeedY += gY * Power / r2;
+                }
             }
         }
     }

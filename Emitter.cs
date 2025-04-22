@@ -15,7 +15,7 @@ namespace система_частиц
         public int MousePositionX;
         public int MousePositionY;
         public float GravitationX = 0;
-        public float GravitationY = 0;
+        public float GravitationY = 1;
         public List<IImpactPoint> impactPoints = new List<IImpactPoint>();
         public int X; // координата X центра эмиттера, будем ее использовать вместо MousePositionX
         public int Y; // соответствующая координата Y 
@@ -27,7 +27,7 @@ namespace система_частиц
         public int RadiusMax = 10; // максимальный радиус частицы
         public int LifeMin = 20; // минимальное время жизни частицы
         public int LifeMax = 100; // максимальное время жизни частицы
-        
+       
 
         public int ParticlesPerTick = 1;
 
@@ -62,17 +62,20 @@ namespace система_частиц
                 }
                 else
                 {
+                    /* теперь двигаю вначале */
+                    particle.X += particle.SpeedX;
+                    particle.Y += particle.SpeedY;
+
+                    particle.Life -= 1;
                     foreach (var point in impactPoints)
                     {
                         point.ImpactParticle(particle);
                     }
 
-                    // а это старый код, его не трогаем
                     particle.SpeedX += GravitationX;
                     particle.SpeedY += GravitationY;
 
-                    particle.X += particle.SpeedX;
-                    particle.Y += particle.SpeedY;
+                  
                 }
             }
             while (particlesToCreate >= 1)
@@ -85,7 +88,7 @@ namespace система_частиц
         }
      
 
-        public void Render(Graphics g)
+        public virtual void Render(Graphics g)
         {
             // ну тут так и быть уж сам впишу...
             // это то же самое что на форме в методе Render
@@ -133,5 +136,8 @@ namespace система_частиц
                 particle.SpeedX = Particle.rand.Next(-2, 2); // разброс влево и вправа у частиц 
             }
         }
+
     }
+
+
 }
