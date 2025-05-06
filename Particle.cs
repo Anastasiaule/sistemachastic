@@ -36,7 +36,7 @@ namespace система_частиц
 
         }
 
-        public virtual void Draw(Graphics g)
+        public void Draw(Graphics g)
         {
             // рассчитываем коэффициент прозрачности по шкале от 0 до 1.0
             float k = Math.Min(1f, Life / 100);
@@ -56,9 +56,9 @@ namespace система_частиц
 
         public class ParticleColorful : Particle
         {
-            // два новых поля под цвет начальный и конечный
             public Color FromColor;
             public Color ToColor;
+            public Color CurrentColor;
 
             // для смеси цветов
             public static Color MixColor(Color color1, Color color2, float k)
@@ -164,6 +164,29 @@ namespace система_частиц
                     particle.SpeedX += gX * Power / r2;
                     particle.SpeedY += gY * Power / r2;
                 }
+            }
+        }
+        public class ColorImpactPoint : IImpactPoint
+        {
+            public int Radius { get; set; } = 50;
+            public Color PointColor { get; set; } = Color.White;
+
+            public override void ImpactParticle(Particle particle)
+            {
+                float dx = X - particle.X;
+                float dy = Y - particle.Y;
+                float distance = (float)Math.Sqrt(dx * dx + dy * dy);
+
+                if (distance < Radius && particle is ParticleColorful colorful)
+                {
+                    colorful.FromColor = PointColor;
+                    colorful.ToColor = PointColor;
+                }
+            }
+
+            public override void Render(Graphics g)
+            {
+                g.DrawEllipse(new Pen(PointColor), X - Radius, Y - Radius, Radius * 2, Radius * 2);
             }
         }
     }

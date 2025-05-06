@@ -10,7 +10,7 @@ namespace система_частиц
 {
     class Emitter
     {
-        public int ParticlesCount = 500;
+        public int ParticlesCount = 300;
         List<Particle> particles = new List<Particle>();
         public int MousePositionX;
         public int MousePositionY;
@@ -24,7 +24,7 @@ namespace система_частиц
         public int SpeedMin = 1; // начальная минимальная скорость движения частицы
         public int SpeedMax = 10; // начальная максимальная скорость движения частицы
         public int RadiusMin = 2; // минимальный радиус частицы
-        public int RadiusMax = 10; // максимальный радиус частицы
+        public int RadiusMax = 5; // максимальный радиус частицы
         public int LifeMin = 20; // минимальное время жизни частицы
         public int LifeMax = 100; // максимальное время жизни частицы
        
@@ -122,18 +122,20 @@ namespace система_частиц
         }
         public class TopEmitter : Emitter
         {
-            public int Width; // длина экрана
+            public int Width;
 
             public override void ResetParticle(Particle particle)
             {
-                base.ResetParticle(particle); // вызываем базовый сброс частицы, там жизнь переопределяется и все такое
+                particle.X = Particle.rand.Next(Width);
+                particle.Y = 0;
+                particle.SpeedY = 1 + Particle.rand.Next(3);
+                particle.Life = 100;
 
-                // а теперь тут уже подкручиваем параметры движения
-                particle.X = Particle.rand.Next(Width); // позиция X -- произвольная точка от 0 до Width
-                particle.Y = 0;  // ноль -- это верх экрана 
-
-                particle.SpeedY = 1; // падаем вниз по умолчанию
-                particle.SpeedX = Particle.rand.Next(-2, 2); // разброс влево и вправа у частиц 
+                if (particle is ParticleColorful colorful)
+                {
+                    colorful.FromColor = Color.White;
+                    colorful.ToColor = Color.White;
+                }
             }
         }
 
