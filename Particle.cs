@@ -36,9 +36,8 @@ namespace система_частиц
 
         }
 
-        public void Draw(Graphics g)
+        public virtual void Draw(Graphics g)
         {
-            // рассчитываем коэффициент прозрачности по шкале от 0 до 1.0
             float k = Math.Min(1f, Life / 100);
             // рассчитываем значение альфа канала в шкале от 0 до 255
             // по аналогии с RGB, он используется для задания прозрачности
@@ -58,9 +57,7 @@ namespace система_частиц
         {
             public Color FromColor;
             public Color ToColor;
-            public Color CurrentColor;
 
-            // для смеси цветов
             public static Color MixColor(Color color1, Color color2, float k)
             {
                 return Color.FromArgb(
@@ -71,17 +68,21 @@ namespace система_частиц
                 );
             }
 
-            // ну и отрисовку перепишем
             public override void Draw(Graphics g)
             {
-                float k = Math.Max(0, Math.Min(1f, Life / 100));
+                // Добавляем расчет прозрачности
+                float k = Math.Min(1f, Life / 100);
+                int alpha = (int)(k * 255);
 
-                // так как k уменьшается от 1 до 0, то порядок цветов обратный
-                var color = MixColor(ToColor, FromColor, k);
+                // Смешиваем цвета с учетом альфа-канала
+                Color color = MixColor(
+                    Color.FromArgb(alpha, FromColor),
+                    Color.FromArgb(alpha, ToColor),
+                    k
+                );
+
                 var b = new SolidBrush(color);
-
                 g.FillEllipse(b, X - Radius, Y - Radius, Radius * 2, Radius * 2);
-
                 b.Dispose();
             }
         }
@@ -107,65 +108,7 @@ namespace система_частиц
               
             }
         }
-        public class GravityPoint : IImpactPoint
-        {
-            public int Power = 100; // сила притяжения
-
-            // а сюда по сути скопировали с минимальными правками то что было в UpdateState
-            public override void ImpactParticle(Particle particle)
-            {
-                float gX = X - particle.X;
-                float gY = Y - particle.Y;
-                float r2 = (float)Math.Max(100, gX * gX + gY * gY);
-
-                particle.SpeedX += gX * Power / r2;
-                particle.SpeedY += gY * Power / r2;
-            }
-            public override void Render(Graphics g)
-            {
-                // буду рисовать окружность с диаметром равным Power
-                g.DrawEllipse(
-                       new Pen(Color.Red),
-                       X - Power / 2,
-                       Y - Power / 2,
-                       Power,
-                       Power
-                   );
-                var stringFormat = new StringFormat(); // создаем экземпляр класса
-                stringFormat.Alignment = StringAlignment.Center; // выравнивание по горизонтали
-                stringFormat.LineAlignment = StringAlignment.Center; // выравнивание по вертикали
-
-                g.DrawString(
-                    $"Я гравитон\nc силой {Power}",
-                    new Font("Verdana", 10),
-                    new SolidBrush(Color.White),
-                    X,
-                    Y,
-                    stringFormat // передаем инфу о выравнивании
-                );
-
-            }
-        }
-        public class AntiGravityPoint : IImpactPoint
-        {
-            public int Power = 100; // сила отторжения
-
-            // а сюда по сути скопировали с минимальными правками то что было в UpdateState
-            public override void ImpactParticle(Particle particle)
-            {
-                float gX = X - particle.X;
-                float gY = Y - particle.Y;
-
-                double r = Math.Sqrt(gX * gX + gY * gY); // считаем расстояние от центра точки до центра частицы
-                if (r + particle.Radius < Power / 2) // если частица оказалось внутри окружности
-                {
-                    // то притягиваем ее
-                    float r2 = (float)Math.Max(100, gX * gX + gY * gY);
-                    particle.SpeedX += gX * Power / r2;
-                    particle.SpeedY += gY * Power / r2;
-                }
-            }
-        }
+       
         public class ColorImpactPoint : IImpactPoint
         {
             public int Radius { get; set; } = 50;

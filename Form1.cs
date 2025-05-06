@@ -10,10 +10,18 @@ namespace система_частиц
     public partial class Form1 : Form
     {
         private List<ColorImpactPoint> colorPoints = new List<ColorImpactPoint>();
-        private Button btnChangeColors;
+        
         private Emitter emitter;
         private ColorImpactPoint draggedPoint;
-
+        private Color[] rainbowColors = {
+    Color.Red,
+    Color.Orange,
+    Color.Yellow,
+    Color.Green,
+    Color.Blue,
+    Color.Indigo,
+    Color.Violet
+};
         public Form1()
         {
             InitializeComponent();
@@ -55,8 +63,6 @@ namespace система_частиц
             }
 
             // Настройка TrackBar для радиуса
-            
-          
             tbSize.Minimum = 10;
             tbSize.Maximum = 100;
             tbSize.Value = 30;
@@ -64,10 +70,9 @@ namespace система_частиц
                 colorPoints.ForEach(p => p.Radius = tbSize.Value);
 
             // Настройка кнопки для смены цветов
-            btnChangeColors = new Button();
-            btnChangeColors.Text = "Случайные цвета";
-            btnChangeColors.Location = new Point(200, 400);
-            btnChangeColors.Click += (s, e) =>
+            
+            btnChange.Text = "Случайные цвета";
+            btnChange.Click += (s, e) =>
             {
                 Random rand = new Random();
                 colorPoints.ForEach(p =>
@@ -78,7 +83,15 @@ namespace система_частиц
                 );
             };
 
-
+            btnRainbow.Text = "Вернуться к радуге";
+            btnRainbow.Click += (s, e) =>
+            {
+                for (int i = 0; i < colorPoints.Count; i++)
+                {
+                    // Присваиваем цвет из массива радуги по порядку
+                    colorPoints[i].PointColor = rainbowColors[i];
+                }
+            };
 
             // Привязка событий мыши для перемещения точек
             picDisplay.MouseDown += PicDisplay_MouseDown;
@@ -92,9 +105,12 @@ namespace система_частиц
             emitter.UpdateState();
             using (var g = Graphics.FromImage(picDisplay.Image))
             {
+
+                g.Clear(Color.White);
                 g.Clear(Color.Black);
                 emitter.Render(g);
             }
+
             picDisplay.Invalidate();
         }
 

@@ -10,7 +10,7 @@ namespace система_частиц
 {
     class Emitter
     {
-        public int ParticlesCount = 300;
+        public int ParticlesCount = 00;
         List<Particle> particles = new List<Particle>();
         public int MousePositionX;
         public int MousePositionY;
@@ -24,7 +24,7 @@ namespace система_частиц
         public int SpeedMin = 1; // начальная минимальная скорость движения частицы
         public int SpeedMax = 10; // начальная максимальная скорость движения частицы
         public int RadiusMin = 2; // минимальный радиус частицы
-        public int RadiusMax = 5; // максимальный радиус частицы
+        public int RadiusMax = 10; // максимальный радиус частицы
         public int LifeMin = 20; // минимальное время жизни частицы
         public int LifeMax = 100; // максимальное время жизни частицы
        
@@ -47,8 +47,8 @@ namespace система_частиц
             int particlesToCreate = ParticlesPerTick;
             foreach (var particle in particles)
             {
-               
-                                    // если здоровье кончилось
+                particle.Life -= 1;
+                // если здоровье кончилось
                 if (particle.Life < 0)
                 {
                    
