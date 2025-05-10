@@ -35,16 +35,20 @@
             this.lblDirection = new System.Windows.Forms.Label();
             this.btnChange = new System.Windows.Forms.Button();
             this.btnRainbow = new System.Windows.Forms.Button();
-            this.btnNoSnow = new System.Windows.Forms.Button();
+            this.btnToggleMode = new System.Windows.Forms.Button();
+            this.btnToggleMode2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.picDisplay)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbSize)).BeginInit();
             this.SuspendLayout();
             // 
             // picDisplay
             // 
-            this.picDisplay.Location = new System.Drawing.Point(12, 12);
+            this.picDisplay.BackColor = System.Drawing.SystemColors.Control;
+            this.picDisplay.BackgroundImage = global::система_частиц.Properties.Resources.fabd2eaa147930deae7b09f17c787b75_c5_720x720;
+            this.picDisplay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.picDisplay.Location = new System.Drawing.Point(20, 23);
             this.picDisplay.Name = "picDisplay";
-            this.picDisplay.Size = new System.Drawing.Size(909, 571);
+            this.picDisplay.Size = new System.Drawing.Size(769, 679);
             this.picDisplay.TabIndex = 0;
             this.picDisplay.TabStop = false;
             // 
@@ -57,10 +61,10 @@
             // tbSize
             // 
             this.tbSize.AutoSize = false;
-            this.tbSize.Location = new System.Drawing.Point(12, 600);
+            this.tbSize.Location = new System.Drawing.Point(93, 708);
             this.tbSize.Maximum = 359;
             this.tbSize.Name = "tbSize";
-            this.tbSize.Size = new System.Drawing.Size(180, 56);
+            this.tbSize.Size = new System.Drawing.Size(153, 56);
             this.tbSize.TabIndex = 1;
             this.tbSize.Scroll += new System.EventHandler(this.tbSize_Scroll);
             // 
@@ -74,37 +78,49 @@
             // 
             // btnChange
             // 
-            this.btnChange.Location = new System.Drawing.Point(239, 600);
+            this.btnChange.Location = new System.Drawing.Point(252, 708);
             this.btnChange.Name = "btnChange";
-            this.btnChange.Size = new System.Drawing.Size(107, 47);
+            this.btnChange.Size = new System.Drawing.Size(93, 47);
             this.btnChange.TabIndex = 3;
             this.btnChange.Text = "button1";
             this.btnChange.UseVisualStyleBackColor = true;
             // 
             // btnRainbow
             // 
-            this.btnRainbow.Location = new System.Drawing.Point(380, 600);
+            this.btnRainbow.Location = new System.Drawing.Point(365, 708);
             this.btnRainbow.Name = "btnRainbow";
-            this.btnRainbow.Size = new System.Drawing.Size(107, 47);
+            this.btnRainbow.Size = new System.Drawing.Size(94, 47);
             this.btnRainbow.TabIndex = 4;
             this.btnRainbow.Text = "button1";
             this.btnRainbow.UseVisualStyleBackColor = true;
             // 
-            // btnNoSnow
+            // btnToggleMode
             // 
-            this.btnNoSnow.Location = new System.Drawing.Point(513, 600);
-            this.btnNoSnow.Name = "btnNoSnow";
-            this.btnNoSnow.Size = new System.Drawing.Size(107, 47);
-            this.btnNoSnow.TabIndex = 5;
-            this.btnNoSnow.Text = "button1";
-            this.btnNoSnow.UseVisualStyleBackColor = true;
+            this.btnToggleMode.Location = new System.Drawing.Point(476, 708);
+            this.btnToggleMode.Name = "btnToggleMode";
+            this.btnToggleMode.Size = new System.Drawing.Size(102, 47);
+            this.btnToggleMode.TabIndex = 5;
+            this.btnToggleMode.Text = "button1";
+            this.btnToggleMode.UseVisualStyleBackColor = true;
+            this.btnToggleMode.Click += new System.EventHandler(this.btnToggleMode_Click);
+            // 
+            // btnToggleMode2
+            // 
+            this.btnToggleMode2.Location = new System.Drawing.Point(600, 708);
+            this.btnToggleMode2.Name = "btnToggleMode2";
+            this.btnToggleMode2.Size = new System.Drawing.Size(89, 47);
+            this.btnToggleMode2.TabIndex = 6;
+            this.btnToggleMode2.Text = "button1";
+            this.btnToggleMode2.UseVisualStyleBackColor = true;
+            this.btnToggleMode2.Click += new System.EventHandler(this.btnToggleMode2_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(933, 659);
-            this.Controls.Add(this.btnNoSnow);
+            this.ClientSize = new System.Drawing.Size(818, 767);
+            this.Controls.Add(this.btnToggleMode2);
+            this.Controls.Add(this.btnToggleMode);
             this.Controls.Add(this.btnRainbow);
             this.Controls.Add(this.btnChange);
             this.Controls.Add(this.lblDirection);
@@ -127,7 +143,8 @@
         private System.Windows.Forms.Label lblDirection;
         private System.Windows.Forms.Button btnChange;
         private System.Windows.Forms.Button btnRainbow;
-        private System.Windows.Forms.Button btnNoSnow;
+        private System.Windows.Forms.Button btnToggleMode;
+        private System.Windows.Forms.Button btnToggleMode2;
     }
 }
 

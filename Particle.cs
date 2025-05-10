@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace система_частиц
 {
-    class Particle
+    partial class Particle
     {
         public int Radius; // радуис частицы
         public float X; // X координата положения частицы в пространстве
@@ -70,20 +70,17 @@ namespace система_частиц
 
             public override void Draw(Graphics g)
             {
-                // Добавляем расчет прозрачности
                 float k = Math.Min(1f, Life / 100);
                 int alpha = (int)(k * 255);
 
-                // Смешиваем цвета с учетом альфа-канала
-                Color color = MixColor(
-                    Color.FromArgb(alpha, FromColor),
-                    Color.FromArgb(alpha, ToColor),
-                    k
-                );
-
-                var b = new SolidBrush(color);
-                g.FillEllipse(b, X - Radius, Y - Radius, Radius * 2, Radius * 2);
-                b.Dispose();
+                // Для режима фонтана убираем затухание
+                if (this is ParticleColorful colorful)
+                {
+                    var color = Color.FromArgb(alpha, colorful.FromColor);
+                    var b = new SolidBrush(color);
+                    g.FillEllipse(b, X - Radius, Y - Radius, Radius * 2, Radius * 2);
+                    b.Dispose();
+                }
             }
         }
         public abstract class IImpactPoint
@@ -108,11 +105,14 @@ namespace система_частиц
               
             }
         }
-       
-        public class ColorImpactPoint : IImpactPoint
+
+
+            public class ColorImpactPoint : IImpactPoint
         {
-            public int Radius { get; set; } = 50;
-            public Color PointColor { get; set; } = Color.White;
+                public float X { get; set; }
+                public float Y { get; set; }
+                public int Radius { get; set; } = 30;
+                public Color PointColor { get; set; } = Color.White;
 
             public override void ImpactParticle(Particle particle)
             {

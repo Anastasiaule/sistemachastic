@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using static система_частиц.Emitter;
 using static система_частиц.Particle;
@@ -9,23 +10,18 @@ namespace система_частиц
 {
     public partial class Form1 : Form
     {
+
         private List<ColorImpactPoint> colorPoints = new List<ColorImpactPoint>();
-        
         private Emitter emitter;
         private ColorImpactPoint draggedPoint;
-        private Color[] rainbowColors = {
-    Color.Red,
-    Color.Orange,
-    Color.Yellow,
-    Color.Green,
-    Color.Blue,
-    Color.Indigo,
-    Color.Violet
-};
+       
         public Form1()
         {
-            InitializeComponent();
 
+
+            InitializeComponent();
+            emitter = new TopEmitter { /* инициализация */ };
+            emitter.impactPoints = colorPoints.Cast<IImpactPoint>().ToList();
             // Инициализация изображения
             picDisplay.Image = new Bitmap(picDisplay.Width, picDisplay.Height);
 
@@ -70,7 +66,7 @@ namespace система_частиц
                 colorPoints.ForEach(p => p.Radius = tbSize.Value);
 
             // Настройка кнопки для смены цветов
-            
+
             btnChange.Text = "Случайные цвета";
             btnChange.Click += (s, e) =>
             {
@@ -93,10 +89,12 @@ namespace система_частиц
                 }
             };
 
-            // Привязка событий мыши для перемещения точек
             picDisplay.MouseDown += PicDisplay_MouseDown;
             picDisplay.MouseMove += PicDisplay_MouseMove;
             picDisplay.MouseUp += PicDisplay_MouseUp;
+
+            btnToggleMode.Text = "Режим фонтана";
+            btnToggleMode2.Text = "Режим снега";
         }
 
         // Таймер для обновления частиц
@@ -106,7 +104,7 @@ namespace система_частиц
             using (var g = Graphics.FromImage(picDisplay.Image))
             {
 
-                g.Clear(Color.White);
+                
                 g.Clear(Color.Black);
                 emitter.Render(g);
             }
@@ -146,6 +144,48 @@ namespace система_частиц
         private void tbSize_Scroll(object sender, EventArgs e)
         {
 
+        }
+
+
+
+        private void btnToggleMode_Click(object sender, EventArgs e)
+        {
+            emitter.particles.Clear();
+            emitter = new CenterEmitter
+            {
+                Width = picDisplay.Width,
+                ParticlesPerTick = 20,
+                SpeedMin = 1,
+                SpeedMax = 3,
+                ColorFrom = Color.White, // Явно задаём цвет
+                ColorTo = Color.Black,
+                impactPoints = new List<IImpactPoint>()
+            };
+            btnToggleMode.Text = "Режим снега";
+            emitter.UpdateState();
+            // Важно обновить точки воздействия для нового эмиттера
+            emitter.impactPoints = colorPoints.Cast<IImpactPoint>().ToList();
+        }
+
+        private void btnToggleMode2_Click(object sender, EventArgs e)
+        {
+            emitter.particles.Clear();
+            emitter = new TopEmitter
+            {
+                Width = picDisplay.Width,
+                ParticlesPerTick = 20,
+                SpeedMin = 1,
+                SpeedMax = 3,
+              
+                X = picDisplay.Width / 2,
+                Y = 0,
+                impactPoints = new List<IImpactPoint>()
+            };
+            btnToggleMode.Text = "Режим фонтана";
+
+            emitter.UpdateState();
+            // Важно обновить точки воздействия для нового эмиттера
+            emitter.impactPoints = colorPoints.Cast<IImpactPoint>().ToList();
         }
     }
 }

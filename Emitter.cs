@@ -10,8 +10,9 @@ namespace система_частиц
 {
     class Emitter
     {
+        public int Width { get; set; }
         public int ParticlesCount = 00;
-        List<Particle> particles = new List<Particle>();
+        public List<Particle> particles = new List<Particle>();
         public int MousePositionX;
         public int MousePositionY;
         public float GravitationX = 0;
@@ -19,22 +20,22 @@ namespace система_частиц
         public List<IImpactPoint> impactPoints = new List<IImpactPoint>();
         public int X; // координата X центра эмиттера, будем ее использовать вместо MousePositionX
         public int Y; // соответствующая координата Y 
-        public int Direction = 0; // вектор направления в градусах куда сыпет эмиттер
-        public int Spreading = 360; // разброс частиц относительно Direction
+        public int Direction = 90; // вектор направления в градусах куда сыпет эмиттер
+        public int Spreading = 20; // разброс частиц относительно Direction
         public int SpeedMin = 1; // начальная минимальная скорость движения частицы
         public int SpeedMax = 10; // начальная максимальная скорость движения частицы
         public int RadiusMin = 2; // минимальный радиус частицы
         public int RadiusMax = 10; // максимальный радиус частицы
         public int LifeMin = 20; // минимальное время жизни частицы
         public int LifeMax = 100; // максимальное время жизни частицы
-       
+
 
         public int ParticlesPerTick = 1;
 
         public Color ColorFrom = Color.White; // начальный цвет частицы
         public Color ColorTo = Color.FromArgb(0, Color.Black); // конечный цвет частиц
 
-           public virtual Particle CreateParticle()
+        public virtual Particle CreateParticle()
         {
             var particle = new ParticleColorful();
             particle.FromColor = ColorFrom;
@@ -47,13 +48,13 @@ namespace система_частиц
             int particlesToCreate = ParticlesPerTick;
             foreach (var particle in particles)
             {
-                particle.Life -= 1;
+                
                 // если здоровье кончилось
-                if (particle.Life < 0)
+                if (particle.Life < 1)
                 {
-                   
+
                     ResetParticle(particle);
-                    if (particlesToCreate > 0)
+                    if (particlesToCreate > 1)
                     {
                         /* у нас как сброс частицы равносилен созданию частицы */
                         particlesToCreate -= 1; // поэтому уменьшаем счётчик созданных частиц на 1
@@ -75,7 +76,7 @@ namespace система_частиц
                     particle.SpeedX += GravitationX;
                     particle.SpeedY += GravitationY;
 
-                  
+
                 }
             }
             while (particlesToCreate >= 1)
@@ -86,7 +87,7 @@ namespace система_частиц
                 particles.Add(particle);
             }
         }
-     
+
 
         public virtual void Render(Graphics g)
         {
@@ -98,7 +99,7 @@ namespace система_частиц
             }
             foreach (var point in impactPoints) // тут теперь  impactPoints
             {
-             
+
                 point.Render(g); // это добавили
             }
         }
@@ -122,24 +123,51 @@ namespace система_частиц
         }
         public class TopEmitter : Emitter
         {
-            public int Width;
 
             public override void ResetParticle(Particle particle)
             {
-                particle.X = Particle.rand.Next(Width);
-                particle.Y = 0;
-                particle.SpeedY = 1 + Particle.rand.Next(3);
-                particle.Life = 100;
+                base.ResetParticle(particle);
 
+              
                 if (particle is ParticleColorful colorful)
                 {
-                    colorful.FromColor = Color.White;
-                    colorful.ToColor = Color.White;
+                    particle.X = Particle.rand.Next(Width); // спаун по всей ширине
+                    particle.Y = 0; // сверху
+                    particle.SpeedY = 1 + Particle.rand.Next(3); // падение вниз
+                    
+                    particle.Life = 100;
+                }
+            }
+           
+
+        }
+        public class CenterEmitter : Emitter
+        {
+            public override void ResetParticle(Particle particle)
+            {
+                if (impactPoints.Count == 0) return;
+
+                // Берём случайную точку из списка
+                var point = impactPoints[Particle.rand.Next(impactPoints.Count)] as ColorImpactPoint;
+                if (point == null) return;
+
+                // Спауним частицу в центре точки
+                particle.X = point.X;
+                particle.Y = point.Y;
+
+                // Задаём движение вверх
+                particle.SpeedY = 0;
+                particle.Life = 100;
+
+                // Если частица цветная, красим её
+                if (particle is ParticleColorful colorful)
+                {
+                    colorful.FromColor = point.PointColor;
+                    colorful.ToColor = Color.FromArgb(0, point.PointColor);
                 }
             }
         }
 
+
     }
-
-
 }
