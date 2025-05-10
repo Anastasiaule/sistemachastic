@@ -10,7 +10,7 @@ namespace система_частиц
 {
     public partial class Form1 : Form
     {
-
+        private Bitmap backgroundImage;
         private List<ColorImpactPoint> colorPoints = new List<ColorImpactPoint>();
         private Emitter emitter;
         private ColorImpactPoint draggedPoint;
@@ -23,7 +23,7 @@ namespace система_частиц
             emitter = new TopEmitter { /* инициализация */ };
             emitter.impactPoints = colorPoints.Cast<IImpactPoint>().ToList();
             // Инициализация изображения
-            picDisplay.Image = new Bitmap(picDisplay.Width, picDisplay.Height);
+            backgroundImage = new Bitmap(picDisplay.BackgroundImage);
 
             // Настройка эмиттера для снега
             emitter = new TopEmitter
@@ -33,7 +33,7 @@ namespace система_частиц
                 SpeedMin = 1,
                 SpeedMax = 3,
                 ColorFrom = Color.White,
-                ColorTo = Color.White,
+                ColorTo = Color.Black,
                 X = picDisplay.Width / 2,
                 Y = 0
             };
@@ -100,13 +100,14 @@ namespace система_частиц
         // Таймер для обновления частиц
         private void timer1_Tick(object sender, EventArgs e)
         {
-            emitter.UpdateState();
-            using (var g = Graphics.FromImage(picDisplay.Image))
-            {
+            emitter.UpdateState(); // <- ЭТА СТРОКА ОБЯЗАТЕЛЬНА!
 
-                
-                g.Clear(Color.Black);
+            using (var tempBitmap = new Bitmap(backgroundImage))
+            using (var g = Graphics.FromImage(tempBitmap))
+            {
                 emitter.Render(g);
+                picDisplay.Image?.Dispose();
+                picDisplay.Image = (Bitmap)tempBitmap.Clone();
             }
 
             picDisplay.Invalidate();
@@ -161,7 +162,7 @@ namespace система_частиц
                 ColorTo = Color.Black,
                 impactPoints = new List<IImpactPoint>()
             };
-            btnToggleMode.Text = "Режим снега";
+           
             emitter.UpdateState();
             // Важно обновить точки воздействия для нового эмиттера
             emitter.impactPoints = colorPoints.Cast<IImpactPoint>().ToList();
@@ -186,6 +187,11 @@ namespace система_частиц
             emitter.UpdateState();
             // Важно обновить точки воздействия для нового эмиттера
             emitter.impactPoints = colorPoints.Cast<IImpactPoint>().ToList();
+        }
+
+        private void picDisplay_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

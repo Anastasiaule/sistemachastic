@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.picDisplay = new System.Windows.Forms.PictureBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tbSize = new System.Windows.Forms.TrackBar();
@@ -44,13 +45,14 @@
             // picDisplay
             // 
             this.picDisplay.BackColor = System.Drawing.SystemColors.Control;
-            this.picDisplay.BackgroundImage = global::система_частиц.Properties.Resources.fabd2eaa147930deae7b09f17c787b75_c5_720x720;
+            this.picDisplay.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("picDisplay.BackgroundImage")));
             this.picDisplay.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.picDisplay.Location = new System.Drawing.Point(20, 23);
+            this.picDisplay.Location = new System.Drawing.Point(12, 23);
             this.picDisplay.Name = "picDisplay";
             this.picDisplay.Size = new System.Drawing.Size(769, 679);
             this.picDisplay.TabIndex = 0;
             this.picDisplay.TabStop = false;
+            this.picDisplay.Click += new System.EventHandler(this.picDisplay_Click);
             // 
             // timer1
             // 
@@ -119,13 +121,13 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(818, 767);
+            this.Controls.Add(this.picDisplay);
             this.Controls.Add(this.btnToggleMode2);
             this.Controls.Add(this.btnToggleMode);
             this.Controls.Add(this.btnRainbow);
             this.Controls.Add(this.btnChange);
             this.Controls.Add(this.lblDirection);
             this.Controls.Add(this.tbSize);
-            this.Controls.Add(this.picDisplay);
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.picDisplay)).EndInit();

@@ -128,13 +128,14 @@ namespace система_частиц
             {
                 base.ResetParticle(particle);
 
-              
+                // 4. Жесткая установка белого цвета
                 if (particle is ParticleColorful colorful)
                 {
                     particle.X = Particle.rand.Next(Width); // спаун по всей ширине
                     particle.Y = 0; // сверху
                     particle.SpeedY = 1 + Particle.rand.Next(3); // падение вниз
-                    
+                    colorful.FromColor = Color.White;
+                    colorful.ToColor = Color.Black;
                     particle.Life = 100;
                 }
             }
